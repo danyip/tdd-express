@@ -15,15 +15,13 @@ const validUser = {
   username: 'user1',
   email: 'user1@mail.com',
   password: 'P4ssword',
-}
+};
 
 const postUser = (user = validUser) => {
   return request(app).post('/api/1.0/users').send(user);
 };
 
-
 describe('User Registration', () => {
-
   it('returns 200 OK when signup request is valid', async () => {
     const response = await postUser();
     expect(response.status).toBe(200);
@@ -65,7 +63,7 @@ describe('User Registration', () => {
     expect(response.status).toBe(400);
   });
 
-  it('returns validationErrors field in response body when validation error occurs', async ()=>{
+  it('returns validationErrors field in response body when validation error occurs', async () => {
     const response = await postUser({
       username: null,
       email: 'user1@mail.com',
@@ -73,9 +71,9 @@ describe('User Registration', () => {
     });
     const body = response.body;
     expect(body.validationErrors).not.toBeUndefined();
-  })
+  });
 
-  it('returns Username cannot be null when username is null', async ()=>{
+  it('returns Username cannot be null when username is null', async () => {
     const response = await postUser({
       username: null,
       email: 'user1@mail.com',
@@ -83,5 +81,25 @@ describe('User Registration', () => {
     });
     const body = response.body;
     expect(body.validationErrors.username).toBe('Username cannot be null');
-  })
+  });
+
+  it('returns email cannot be null when email is null', async () => {
+    const response = await postUser({
+      username: 'user1',
+      email: null,
+      password: 'P4ssword',
+    });
+    const body = response.body;
+    expect(body.validationErrors.email).toBe('Email cannot be null');
+  });
+  
+  it('returns errors for both when username and email is null', async () => {
+    const response = await postUser({
+      username: null,
+      email: null,
+      password: 'P4ssword',
+    });
+    const body = response.body;
+    expect(Object.keys(body.validationErrors)).toEqual(['username', 'email']);
+  });
 }); // describe('User Registration')
