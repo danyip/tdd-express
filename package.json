@@ -4,16 +4,21 @@
   "description": "tdd with express",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js",
-    "test": "jest --watch",
+    "start": "cross-env NODE_ENV=development nodemon index.js",
+    "test": "cross-env NODE_ENV=test jest --watch",
     "lint": "eslint ."
   },
   "author": "Daniel Yip",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.3"
+    "bcrypt": "^5.0.1",
+    "config": "^3.3.7",
+    "express": "^4.17.3",
+    "sequelize": "^6.18.0",
+    "sqlite3": "^5.0.2"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "eslint": "^8.12.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
@@ -24,7 +29,7 @@
   },
   "eslintConfig": {
     "parserOptions": {
-      "ecmaVersion": 6
+      "ecmaVersion": 2018
     },
     "extends": [
       "eslint:recommended",
