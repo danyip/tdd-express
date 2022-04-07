@@ -1,6 +1,6 @@
 const express = require('express');
-
 const UserService = require('./UserService');
+const User = require('./User');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
 
@@ -17,7 +17,14 @@ router.post(
     .withMessage('Email cannot be null')
     .bail()
     .isEmail()
-    .withMessage('Email is not valid'),
+    .withMessage('Email is not valid')
+    .bail()
+    .custom(async (email) => {
+      const user = await UserService.findByEmail(email);
+      if (user) {
+        throw new Error('Email in use');
+      }
+    }),
   check('password')
     .notEmpty()
     .withMessage('Password cannot be null')
@@ -33,7 +40,7 @@ router.post(
     if (!errors.isEmpty()) {
       const validationErrors = {};
       errors.array().forEach((error) => (validationErrors[error.param] = error.msg));
-      // const response = { validationErrors: { ...req.validationErrors } };
+
       return res.status(400).send({ validationErrors: validationErrors });
     }
     await UserService.save(req.body);
