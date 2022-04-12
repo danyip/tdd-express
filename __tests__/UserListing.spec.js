@@ -50,10 +50,50 @@ describe('Listing Users', () => {
     console.log(response.body.content[0]);
     expect(response.body.content.length).toBe(6);
   });
-  it('returns only id, username and email in content array for each user', async ()=>{
+  it('returns only id, username and email in content array for each user', async () => {
     await addUsers(11);
     const response = await getUsers();
-    const user = response.body.content[0]
+    const user = response.body.content[0];
     expect(Object.keys(user)).toEqual(['id', 'username', 'email']);
-  })
+  });
+  it('returns 2 as totalPages when there are 15 active and 7 inactive users', async () => {
+    await addUsers(15, 7);
+    const response = await getUsers();
+    expect(response.body.totalPages).toBe(2);
+  });
+  it('returns second page users and page indicator when page is set as 1 in request parameter', async () => {
+    await addUsers(11);
+    const response = await getUsers().query({ page: 1 });
+    expect(response.body.content[0].username).toBe('user11');
+    expect(response.body.page).toBe(1);
+  });
+  it('returns first page when page is set below zero as request parameter', async () => {
+    await addUsers(11);
+    const response = await getUsers().query({ page: -5 });
+    expect(response.body.page).toBe(0);
+  });
+  it('returns 5 users and corresponding size indicator when size is set as 5 in request parameter', async () => {
+    await addUsers(11);
+    const response = await getUsers().query({ size: 5 });
+    expect(response.body.content.length).toBe(5);
+    expect(response.body.size).toBe(5);
+  });
+  it('returns 10 users and corresponsing size indicator when size is set to 1000', async () => {
+    await addUsers(11);
+    const response = await getUsers().query({ size: 1000 });
+    expect(response.body.content.length).toBe(10);
+    expect(response.body.size).toBe(10);
+  });
+  it('returns 10 users and corresponsing size indicator when size is set to 0', async () => {
+    await addUsers(11);
+    const response = await getUsers().query({ size: 0 });
+    expect(response.body.content.length).toBe(10);
+    expect(response.body.size).toBe(10);
+  });
+  it('returns returs page as zero and size as 10 when non numeric query params provided for both', async () => {
+    await addUsers(11);
+    const response = await getUsers().query({ size: 'size', page: 'page' });
+    expect(response.body.size).toBe(10);
+    expect(response.body.page).toBe(0);
+  });
 }); // describe('Listing Users')

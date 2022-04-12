@@ -13,7 +13,12 @@ const generateToken = (length) => {
 const save = async (body) => {
   const { username, email, password } = body;
   const hash = await bcrypt.hash(password, 10);
-  const user = { username, email, password: hash, activationToken: generateToken(16) };
+  const user = {
+    username,
+    email,
+    password: hash,
+    activationToken: generateToken(16),
+  };
   const transaction = await sequelize.transaction();
   await User.create(user, { transaction });
   try {
@@ -39,12 +44,18 @@ const activate = async (token) => {
   await user.save();
 };
 
-const getUsers = async () => {
-  const users = await User.findAll({
-    where: {inactive: false},
+const getUsers = async (page, size) => {
+  const usersWithCount = await User.findAndCountAll({
+    where: { inactive: false },
     attributes: ['id', 'username', 'email'],
-    limit: 10,
+    limit: size,
+    offset: page * size,
   });
-  return { content: users, page: 0, size: 10, totalPages: 0 };
+  return {
+    content: usersWithCount.rows,
+    page,
+    size,
+    totalPages: Math.ceil(usersWithCount.count / size),
+  };
 };
 module.exports = { save, findByEmail, activate, getUsers };
