@@ -4,7 +4,7 @@ const User = require('./User');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
 const InvalidTokenException = require('./InvalidTokenException');
-const ValidationException = require('../error/ValidationException')
+const ValidationException = require('../error/ValidationException');
 
 router.post(
   '/api/1.0/users',
@@ -40,8 +40,7 @@ router.post(
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      
-      return next(new ValidationException(errors.array()))
+      return next(new ValidationException(errors.array()));
     }
     try {
       await UserService.save(req.body);
@@ -60,6 +59,11 @@ router.post('/api/1.0/users/token/:token', async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+router.get('/api/1.0/users', async (req, res) => {
+  const users = await UserService.getUsers()
+  res.send(users);
 });
 
 module.exports = router;
