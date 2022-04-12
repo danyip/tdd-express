@@ -1,12 +1,12 @@
 const express = require('express');
 const UserService = require('./UserService');
-const User = require('./User');
+
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
-const InvalidTokenException = require('./InvalidTokenException');
+
 const ValidationException = require('../error/ValidationException');
 const pagination = require('../middleware/pagination');
-const UserNotFoundException = require('./UserNotFoundException');
+
 
 router.post(
   '/api/1.0/users',

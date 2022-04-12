@@ -1,9 +1,10 @@
 const express = require('express');
 const UserRouter = require('./user/UserRouter');
+const AuthenticationRouter = require('./auth/AuthenticationRouter');
 const i18next = require('i18next');
 const Backend = require('i18next-fs-backend');
 const middleware = require('i18next-http-middleware');
-const errorHandler = require('./error/ErrorHandler')
+const errorHandler = require('./error/ErrorHandler');
 i18next
   .use(Backend)
   .use(middleware.LanguageDetector)
@@ -27,6 +28,7 @@ app.use(middleware.handle(i18next));
 app.use(express.json());
 
 app.use(UserRouter);
+app.use(AuthenticationRouter);
 
 app.use(errorHandler);
 
