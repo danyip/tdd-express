@@ -1,10 +1,13 @@
 const request = require('supertest');
 const app = require('../src/app');
 const User = require('../src/user/User');
+const Token = require('../src/auth/Token');
+
 const sequelize = require('../src/config/database');
 const bcrypt = require('bcrypt');
 const en = require('../locales/en/translation.json');
 const tr = require('../locales/tr/translation.json');
+const Mail = require('nodemailer/lib/mailer');
 
 beforeAll(async () => {
   await sequelize.sync();
@@ -33,6 +36,15 @@ const postAuthentication = async (credentials, options = {}) => {
     agent.set('Accept-Language', options.language);
   }
   return await agent.send(credentials);
+};
+
+const postLogout = (options = {}) => {
+  const agent = request(app).post('/api/1.0/logout');
+  if (options.token) {
+    agent.set('Authorization', `Bearer ${options.token}`);
+  }
+
+  return agent.send();
 };
 
 describe('Authentication', () => {
@@ -138,6 +150,21 @@ describe('Authentication', () => {
       email: 'user1@mail.com',
       password: 'P4ssword',
     });
-    expect(response.body.token).not.toBeUndefined()
+    expect(response.body.token).not.toBeUndefined();
+  });
+});
+
+describe('Logout', () => {
+  it('returns 200 ok when unauthorized send for logout', async () => {
+    const response = await postLogout();
+    expect(response.status).toBe(200);
+  });
+  it('removes the token from the database', async () => {
+    await addUser();
+    const response = await postAuthentication({ email: 'user1@mail.com', password: 'P4ssword' });
+    const token = response.body.token;
+    await postLogout({ token: token });
+    const storedToken = await Token.findOne({ where: { token: token } });
+    expect(storedToken).toBeNull();
   });
 });
