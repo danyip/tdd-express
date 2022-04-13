@@ -1,16 +1,13 @@
 const User = require('./User');
 const bcrypt = require('bcrypt');
-const crypto = require('crypto');
 const EmailService = require('../email/EmailService');
 const Sequelize = require('sequelize');
 const sequelize = require('../config/database');
 const EmailException = require('../email/EmailException');
 const InvalidTokenException = require('./InvalidTokenException');
 const UserNotFoundException = require('./UserNotFoundException');
+const { randomString } = require('../shared/generator');
 
-const generateToken = (length) => {
-  return crypto.randomBytes(length).toString('hex').substring(0, length);
-};
 
 const save = async (body) => {
   const { username, email, password } = body;
@@ -19,7 +16,7 @@ const save = async (body) => {
     username,
     email,
     password: hash,
-    activationToken: generateToken(16),
+    activationToken: randomString(16),
   };
   const transaction = await sequelize.transaction();
   await User.create(user, { transaction });
