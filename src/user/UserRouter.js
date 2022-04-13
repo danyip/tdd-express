@@ -62,9 +62,11 @@ router.post('/api/1.0/users/token/:token', async (req, res, next) => {
   }
 });
 
-router.get('/api/1.0/users', pagination, async (req, res) => {
+router.get('/api/1.0/users', pagination, basicAuthentication, async (req, res) => {
+  const authenicatedUser = req.authenicatedUser;
+  
   const { page, size } = req.pagination;
-  const users = await UserService.getUsers(page, size);
+  const users = await UserService.getUsers(page, size, authenicatedUser);
   res.send(users);
 });
 
