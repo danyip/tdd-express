@@ -8,7 +8,6 @@ const InvalidTokenException = require('./InvalidTokenException');
 const UserNotFoundException = require('./UserNotFoundException');
 const { randomString } = require('../shared/generator');
 
-
 const save = async (body) => {
   const { username, email, password } = body;
   const hash = await bcrypt.hash(password, 10);
@@ -82,4 +81,8 @@ const updateUser = async (id, updatedBody) => {
   user.username = updatedBody.username;
   await user.save();
 };
-module.exports = { save, findByEmail, activate, getUsers, getUser, updateUser };
+
+const deleteUser = async (id) => {
+  await User.destroy({ where: { id: id } });
+};
+module.exports = { save, findByEmail, activate, getUsers, getUser, updateUser, deleteUser };

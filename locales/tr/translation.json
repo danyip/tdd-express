@@ -15,6 +15,7 @@
   "user_not_found": "Kullanıcı bulunamadı",
   "authentication_failure": "Yanlış kimlik bilgileri",
   "inactive_authentication_failure": "Hesap etkin değil",
-  "unauthorized_user_update": "Kullanıcıyı güncelleme yetkiniz yok"
+  "unauthorized_user_update": "Kullanıcıyı güncelleme yetkiniz yok",
+  "unauthorized_user_delete": "Kullanıcıyı güncelleme yetkiniz yok"
 
 }
