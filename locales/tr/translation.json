@@ -18,7 +18,6 @@
   "unauthorized_user_update": "Kullanıcıyı güncelleme yetkiniz yok",
   "unauthorized_user_delete": "Kullanıcı silme yetkiniz yok",
   "email_not_inuse": "Email bulunamadı",
-  "password_reset_request_success": "Şifre sıfırlama için e-postanızı kontrol edin"
-
-
+  "password_reset_request_success": "Şifre sıfırlama için e-postanızı kontrol edin",
+  "unauthorized_password_reset": "Şifrenizi güncelleme yetkiniz yok. Lütfen parola sıfırlama adımlarını tekrar uygulayın."
 }
