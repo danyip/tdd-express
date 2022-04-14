@@ -20,6 +20,7 @@ const deleteToken = async (token) => {
   await Token.destroy({ where: { token: token } });
 };
 
+
 module.exports = {
   createToken,
   verify,

@@ -85,4 +85,6 @@ const updateUser = async (id, updatedBody) => {
 const deleteUser = async (id) => {
   await User.destroy({ where: { id: id } });
 };
+
+
 module.exports = { save, findByEmail, activate, getUsers, getUser, updateUser, deleteUser };
