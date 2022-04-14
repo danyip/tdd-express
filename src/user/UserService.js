@@ -6,6 +6,7 @@ const sequelize = require('../config/database');
 const EmailException = require('../email/EmailException');
 const InvalidTokenException = require('./InvalidTokenException');
 const NotFoundException = require('../error/NotFoundException');
+const TokenService = require('../auth/TokenService');
 
 const { randomString } = require('../shared/generator');
 
@@ -80,6 +81,7 @@ const getUser = async (id) => {
 const updateUser = async (id, updatedBody) => {
   const user = await User.findOne({ where: { id: id } });
   user.username = updatedBody.username;
+  user.image = updatedBody.image;
   await user.save();
 };
 
@@ -101,4 +103,30 @@ const passwordResetRequest = async (email) => {
   }
 };
 
-module.exports = { save, findByEmail, activate, getUsers, getUser, updateUser, deleteUser, passwordResetRequest };
+const updatePassword = async (updateRequest) => {
+  const user = await findByPasswordResetToken(updateRequest.passwordResetToken);
+  const hash = await bcrypt.hash(updateRequest.password, 10);
+  user.password = hash;
+  user.passwordResetToken = null;
+  user.inactive = false;
+  user.activationToken = null;
+  await user.save();
+  await TokenService.clearTokens(user.id);
+};
+
+const findByPasswordResetToken = (token) => {
+  return User.findOne({ where: { passwordResetToken: token } });
+};
+
+module.exports = {
+  save,
+  findByEmail,
+  activate,
+  getUsers,
+  getUser,
+  updateUser,
+  deleteUser,
+  passwordResetRequest,
+  updatePassword,
+  findByPasswordResetToken,
+};

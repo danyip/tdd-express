@@ -5,7 +5,6 @@ const { check, validationResult } = require('express-validator');
 const ValidationException = require('../error/ValidationException');
 const ForbiddenException = require('../error/ForbiddenException');
 const pagination = require('../middleware/pagination');
-const User = require('../user/User');
 
 router.post(
   '/api/1.0/users',
@@ -115,11 +114,8 @@ router.post('/api/1.0/user/password', check('email').isEmail().withMessage('emai
 });
 
 const passwordResetTokenValidator = async (req, res, next) => {
-  const user = await User.findOne({
-    where: {
-      passwordResetToken: req.body.passwordResetToken,
-    },
-  });
+  const user = await UserService.findByPasswordResetToken(req.body.passwordResetToken);
+
   if (!user) {
     return next(new ForbiddenException('unauthorized_password_reset'));
   }
@@ -140,10 +136,11 @@ router.put(
     .withMessage('password_pattern'),
   async (req, res, next) => {
     const errors = validationResult(req);
-
     if (!errors.isEmpty()) {
       return next(new ValidationException(errors.array()));
     }
+    await UserService.updatePassword(req.body);
+    res.send();
   }
 );
 
