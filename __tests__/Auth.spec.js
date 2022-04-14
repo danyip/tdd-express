@@ -7,7 +7,6 @@ const sequelize = require('../src/config/database');
 const bcrypt = require('bcrypt');
 const en = require('../locales/en/translation.json');
 const tr = require('../locales/tr/translation.json');
-const Mail = require('nodemailer/lib/mailer');
 
 beforeAll(async () => {
   await sequelize.sync();
