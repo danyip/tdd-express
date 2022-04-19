@@ -3,7 +3,6 @@ const path = require('path');
 const config = require('config');
 const { randomString } = require('../shared/generator');
 
-
 const { uploadDir, profileDir } = config;
 const profileFolder = path.join('.', uploadDir, profileDir);
 
@@ -23,4 +22,9 @@ const saveProfileImage = async (base64File) => {
   return filename;
 };
 
-module.exports = { createFolders, saveProfileImage };
+const deleteProfileImage = async (filename) => {
+  const filePath = path.join(profileFolder, filename);
+  await fs.promises.unlink(filePath);
+};
+
+module.exports = { createFolders, saveProfileImage, deleteProfileImage };
