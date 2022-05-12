@@ -39,6 +39,7 @@ router.post(
   async (req, res, next) => {
     console.log("HERE");
     const errors = validationResult(req);
+    console.log(errors);
     if (!errors.isEmpty()) {
       return next(new ValidationException(errors.array()));
     }
