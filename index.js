@@ -7,11 +7,4 @@ sequelize.sync();
 
 TokenService.scheduledCleanup();
 
-logger.error('error')
-logger.warn('warn')
-logger.info('info')
-logger.verbose('verbose')
-logger.debug('debug')
-logger.silly('silly')
-
-app.listen(4000, () => logger.info('app is running!'));
+app.listen(4000, () => logger.info('app is running. version: ' + process.env.npm_package_version));
