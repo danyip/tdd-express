@@ -47,6 +47,7 @@ router.post(
       await UserService.save(req.body);
       return res.send({ message: req.t('user_create_success') });
     } catch (err) {
+      console.log('ERROR USER SERVICE', err);
       next(err);
     }
   }
