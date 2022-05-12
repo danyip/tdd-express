@@ -37,6 +37,7 @@ router.post(
     .matches(/^(?:(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*)$/)
     .withMessage('password_pattern'),
   async (req, res, next) => {
+    console.log("HERE");
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return next(new ValidationException(errors.array()));
