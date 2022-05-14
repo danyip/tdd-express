@@ -23,5 +23,6 @@
   "profile_image_size": "Profil resminiz 2MB'den büyük olamaz",
   "unsupported_image_file": "Yalnızca JPEG veya PNG dosyalarına izin verilird",
   "unauthorized_hoax_submit": "Artık aldatmaca yayınlama yetkiniz var",
-  "hoax_submit_success": "Aldatmaca kaydedildi"
+  "hoax_submit_success": "Aldatmaca kaydedildi",
+  "hoax_content_size": "Aldatmaca en az 10 ve en fazla 5000 karakter olmalıdır"
 }
