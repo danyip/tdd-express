@@ -22,5 +22,6 @@
   "unauthorized_password_reset": "Şifrenizi güncelleme yetkiniz yok. Lütfen parola sıfırlama adımlarını tekrar uygulayın.",
   "profile_image_size": "Profil resminiz 2MB'den büyük olamaz",
   "unsupported_image_file": "Yalnızca JPEG veya PNG dosyalarına izin verilird",
-  "unauthorized_hoax_submit": "Artık aldatmaca yayınlama yetkiniz var"
+  "unauthorized_hoax_submit": "Artık aldatmaca yayınlama yetkiniz var",
+  "hoax_submit_success": "Aldatmaca kaydedildi"
 }
