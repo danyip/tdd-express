@@ -37,9 +37,7 @@ router.post(
     .matches(/^(?:(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*)$/)
     .withMessage('password_pattern'),
   async (req, res, next) => {
-    console.log("HERE");
     const errors = validationResult(req);
-    console.log(errors);
     if (!errors.isEmpty()) {
       return next(new ValidationException(errors.array()));
     }
@@ -47,7 +45,6 @@ router.post(
       await UserService.save(req.body);
       return res.send({ message: req.t('user_create_success') });
     } catch (err) {
-      console.log('ERROR USER SERVICE', err);
       next(err);
     }
   }
@@ -64,10 +61,10 @@ router.post('/api/1.0/users/token/:token', async (req, res, next) => {
 });
 
 router.get('/api/1.0/users', pagination, async (req, res) => {
-  const authenicatedUser = req.authenicatedUser;
+  const authenticatedUser = req.authenticatedUser;
 
   const { page, size } = req.pagination;
-  const users = await UserService.getUsers(page, size, authenicatedUser);
+  const users = await UserService.getUsers(page, size, authenticatedUser);
   res.send(users);
 });
 
@@ -106,9 +103,9 @@ router.put(
     return true;
   }),
   async (req, res, next) => {
-    const authenicatedUser = req.authenicatedUser;
+    const authenticatedUser = req.authenticatedUser;
     // eslint-disable-next-line eqeqeq
-    if (!authenicatedUser || authenicatedUser.id != req.params.id) {
+    if (!authenticatedUser || authenticatedUser.id != req.params.id) {
       return next(new ForbiddenException('unauthorized_user_update'));
     }
     const errors = validationResult(req);
@@ -121,10 +118,10 @@ router.put(
 );
 
 router.delete('/api/1.0/users/:id', async (req, res, next) => {
-  const authenicatedUser = req.authenicatedUser;
+  const authenticatedUser = req.authenticatedUser;
 
   // eslint-disable-next-line eqeqeq
-  if (!authenicatedUser || authenicatedUser.id != req.params.id) {
+  if (!authenticatedUser || authenticatedUser.id != req.params.id) {
     return next(new ForbiddenException('unauthorized_user_delete'));
   }
   await UserService.deleteUser(req.params.id);

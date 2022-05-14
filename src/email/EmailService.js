@@ -3,7 +3,6 @@ const nodemailer = require('nodemailer');
 const logger = require('../shared/logger');
 
 const sendAccountActivation = async (email, token) => {
-  console.log(email, token);
   const info = await transporter.sendMail({
     from: 'info@my-app.com',
     to: email,

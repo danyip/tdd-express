@@ -25,6 +25,8 @@ const activeUser = {
   inactive: false,
 };
 
+const credentials = { email: 'user1@mail.com', password: 'P4ssword' }
+
 const addUser = async (user = { ...activeUser }) => {
   const hash = await bcrypt.hash(user.password, 10);
   user.password = hash;
@@ -90,7 +92,7 @@ describe('Authentication', () => {
     ${'tr'}  | ${tr.authentication_failure}
     ${'en'}  | ${en.authentication_failure}
   `('returns $message when authentication fails and language is set as $language', async ({ language, message }) => {
-    const response = await postAuthentication({ email: 'user1@mail.com', password: 'P4ssword' }, { language });
+    const response = await postAuthentication(credentials, { language });
     expect(response.body.message).toBe(message);
   });
   it('returns 401 when password is wrong', async () => {
@@ -129,7 +131,7 @@ describe('Authentication', () => {
     'returns $message when authentication fails for inactive account and language is set as $language',
     async ({ language, message }) => {
       await addUser({ ...activeUser, inactive: true });
-      const response = await postAuthentication({ email: 'user1@mail.com', password: 'P4ssword' }, { language });
+      const response = await postAuthentication(credentials, { language });
       expect(response.body.message).toBe(message);
     }
   );
@@ -145,7 +147,7 @@ describe('Authentication', () => {
     });
     expect(response.status).toBe(401);
   });
-  it('returns token in response body when credientials are correct', async () => {
+  it('returns token in response body when credentials are correct', async () => {
     await addUser();
     const response = await postAuthentication({
       email: 'user1@mail.com',
@@ -162,7 +164,7 @@ describe('Logout', () => {
   });
   it('removes the token from the database', async () => {
     await addUser();
-    const response = await postAuthentication({ email: 'user1@mail.com', password: 'P4ssword' });
+    const response = await postAuthentication(credentials);
     const token = response.body.token;
     await postLogout({ token: token });
     const storedToken = await Token.findOne({ where: { token: token } });

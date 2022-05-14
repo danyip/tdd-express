@@ -16,6 +16,8 @@ beforeEach(async () => {
   await User.destroy({ truncate: { cascade: true } });
 });
 
+const credentials = { email: 'user1@mail.com', password: 'P4ssword' }
+
 const auth = async (options = {}) => {
   let token;
   if (options.auth) {
@@ -117,7 +119,7 @@ describe('Listing Users', () => {
   });
   it('returns user page without logged in user when request ha valid authorization', async () => {
     await addUsers(11);
-    const token = await auth({ auth: { email: 'user1@mail.com', password: 'P4ssword' } });
+    const token = await auth({ auth: credentials });
     const response = await getUsers({ token: token });
     expect(response.body.totalPages).toBe(1);
   });

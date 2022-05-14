@@ -12,7 +12,7 @@ const basicAuthentication = async (req, res, next) => {
     if (user && !user.inactive) {
       const match = await bcrypt.compare(password, user.password);
       if (match) {
-        req.authenicatedUser = user;
+        req.authenticatedUser = user;
       }
     }
   }

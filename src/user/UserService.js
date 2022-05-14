@@ -45,12 +45,12 @@ const activate = async (token) => {
   await user.save();
 };
 
-const getUsers = async (page, size, authenicatedUser) => {
+const getUsers = async (page, size, authenticatedUser) => {
   const usersWithCount = await User.findAndCountAll({
     where: {
       inactive: false,
       id: {
-        [Sequelize.Op.not]: authenicatedUser ? authenicatedUser.id : 0,
+        [Sequelize.Op.not]: authenticatedUser ? authenticatedUser.id : 0,
       },
     },
     attributes: ['id', 'username', 'email', 'image'],
