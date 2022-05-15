@@ -9,10 +9,12 @@ const tokenAuthentication = require('./middleware/tokenAuthentication');
 const FileService = require('./file/FileService');
 const config = require('config');
 const path = require('path');
-const HoaxRouter = require('./hoax/HoaxRouter')
+const HoaxRouter = require('./hoax/HoaxRouter');
+const FileRouter = require('./file/FileRouter');
 
 const { uploadDir, profileDir } = config;
 const profileFolder = path.join('.', uploadDir, profileDir);
+
 const ONE_YEAR_IN_MILLIS = 365 * 24 * 60 * 60 * 1000;
 
 i18next
@@ -47,6 +49,7 @@ app.use(UserRouter);
 
 app.use(AuthenticationRouter);
 app.use(HoaxRouter);
+app.use(FileRouter);
 
 app.use(errorHandler);
 
