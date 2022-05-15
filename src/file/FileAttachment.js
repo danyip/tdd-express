@@ -11,7 +11,7 @@ FileAttachment.init(
       type: Sequelize.STRING,
     },
     uploadDate: {
-      type: Sequelize.DATE``,
+      type: Sequelize.DATE,
     },
     fileType: {
       type: Sequelize.STRING,
