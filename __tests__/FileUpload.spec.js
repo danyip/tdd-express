@@ -14,7 +14,7 @@ beforeAll(async () => {
   if (process.env.NODE_ENV === 'test') {
     await sequelize.sync();
   }
-}); 
+});
 
 beforeEach(async () => {
   await FileAttachment.destroy({ truncate: true });
@@ -119,5 +119,9 @@ describe('Upload file for hoax', () => {
     expect(error.message).toBe(message);
     expect(error.timestamp).toBeGreaterThan(nowInMillis);
     fs.unlinkSync(filePath);
+  });
+  it('returns attachment id in response', async () => {
+    const response = await uploadFile();
+    expect(Object.keys(response.body)).toEqual(['id']);
   });
 });
