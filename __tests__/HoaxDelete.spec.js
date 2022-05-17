@@ -84,4 +84,19 @@ describe('Delete hoax', () => {
     const response = await deleteHoax(hoax.id, { token });
     expect(response.status).toBe(403);
   });
+  it('returns 200 when user deletes their own hoax', async () => {
+    const user = await addUser();
+    const hoax = await addHoax(user.id);
+    const token = await auth({ auth: credentials });
+    const response = await deleteHoax(hoax.id, { token });
+    expect(response.status).toBe(200);
+  });
+  it('removes hoax from db when user deletes their hoax', async () => {
+    const user = await addUser();
+    const hoax = await addHoax(user.id);
+    const token = await auth({ auth: credentials });
+    await deleteHoax(hoax.id, { token });
+    const hoaxInDb = await Hoax.findOne({ where: { id: hoax.id } });
+    expect(hoaxInDb).toBeNull();
+  });
 });

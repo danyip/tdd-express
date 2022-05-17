@@ -34,8 +34,16 @@ router.get(['/api/1.0/hoaxes', '/api/1.0/users/:userId/hoaxes'], pagination, asy
   }
 });
 
-router.delete('/api/1.0/hoaxes/:id', (req, res) => {
-  throw new ForbiddenException('unauthorized_hoax_delete');
+router.delete('/api/1.0/hoaxes/:id', async (req, res, next) => {
+  if (!req.authenticatedUser) {
+    return next(new ForbiddenException('unauthorized_hoax_delete'));
+  }
+  try {
+    await HoaxService.deleteHoax(req.params.id, req.authenticatedUser.id);
+    res.send();
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;
