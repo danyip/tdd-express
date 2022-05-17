@@ -61,7 +61,7 @@ describe('User Delete', () => {
     'it returns error body with $message for unauthorized request when language is $language',
     async ({ language, message }) => {
       const nowInMillis = new Date().getTime();
-      const response = await await deleteUser(5, { language });
+      const response = await deleteUser(5, { language });
       expect(response.body.path).toBe('/api/1.0/users/5');
       expect(response.body.timestamp).toBeGreaterThan(nowInMillis);
       expect(response.body.message).toBe(message);
