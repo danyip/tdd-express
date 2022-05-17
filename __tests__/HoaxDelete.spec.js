@@ -2,12 +2,26 @@ const request = require('supertest');
 const app = require('../src/app');
 const User = require('../src/user/User');
 const Hoax = require('../src/hoax/Hoax');
+const FileAttachment = require('../src/file/FileAttachment');
 const bcrypt = require('bcrypt');
 const en = require('../locales/en/translation.json');
 const tr = require('../locales/tr/translation.json');
+const fs = require('fs');
+const path = require('path');
+const config = require('config');
+
+const { uploadDir, attachmentDir } = config;
+const attachmentFolder = path.join('.', uploadDir, attachmentDir);
+
+const filename = 'test-file-hoax-delete' + Date.now();
+const targetPath = path.join(attachmentFolder, filename);
+const testFilePath = path.join('.', '__tests__', 'resources', 'test-png.png');
 
 beforeEach(async () => {
   await User.destroy({ truncate: { cascade: true } });
+  if (fs.existsSync(targetPath)) {
+    fs.unlinkSync(targetPath);
+  }
 });
 
 const activeUser = {
@@ -30,6 +44,15 @@ const addHoax = async (userId) => {
     content: 'Hoax for user',
     timestamp: Date.now(),
     userId: userId,
+  });
+};
+
+const addFileAttachment = async (hoaxId) => {
+  fs.copyFileSync(testFilePath, targetPath);
+  return await FileAttachment.create({
+    filename: filename,
+    uploadDate: new Date(),
+    hoaxId: hoaxId,
   });
 };
 
@@ -98,5 +121,22 @@ describe('Delete hoax', () => {
     await deleteHoax(hoax.id, { token });
     const hoaxInDb = await Hoax.findOne({ where: { id: hoax.id } });
     expect(hoaxInDb).toBeNull();
+  });
+  it('removes the file attachment from db when user deletes their hoax', async () => {
+    const user = await addUser();
+    const hoax = await addHoax(user.id);
+    const attachment = await addFileAttachment(hoax.id);
+    const token = await auth({ auth: credentials });
+    await deleteHoax(hoax.id, { token });
+    const attachmentInDb = await FileAttachment.findOne({ where: { id: attachment.id } });
+    expect(attachmentInDb).toBeNull();
+  });
+  it('removes the file from storage when user deletes their hoax', async () => {
+    const user = await addUser();
+    const hoax = await addHoax(user.id);
+    await addFileAttachment(hoax.id);
+    const token = await auth({ auth: credentials });
+    await deleteHoax(hoax.id, { token });
+    expect(fs.existsSync(targetPath)).toBe(false);
   });
 });

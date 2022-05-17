@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 const fs = require('fs');
 const path = require('path');
 const config = require('config');
@@ -96,6 +97,14 @@ const removeUnusedAttachments = () => {
   }, ONE_DAY);
 };
 
+const deleteAttachment = async (filename) => {
+  const filePath = path.join(attachmentFolder, filename);
+  try {
+    await fs.promises.access(filePath);
+    await fs.promises.unlink(filePath);
+  } catch (error) {}
+};
+
 module.exports = {
   createFolders,
   saveProfileImage,
@@ -105,4 +114,5 @@ module.exports = {
   saveAttachment,
   associateFileToHoax,
   removeUnusedAttachments,
+  deleteAttachment
 };
